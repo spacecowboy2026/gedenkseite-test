@@ -172,6 +172,13 @@ h1 {
   display: flex; justify-content: center; align-items: center;
   border-radius: 50%; background: var(--badge-icon);
 }
+/* Dezenter Hinweis, solange der Browser den Ton noch blockiert */
+.music.wartet .music__icon { animation: musik-wartet 2.4s ease-out infinite; }
+@keyframes musik-wartet {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--dark) 45%, transparent); }
+  70%  { box-shadow: 0 0 0 9px color-mix(in srgb, var(--dark) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--dark) 0%, transparent); }
+}
 .music .icon-pause { display: none; }
 .music[data-playing="true"] .icon-play { display: none; }
 .music[data-playing="true"] .icon-pause { display: block; }
@@ -229,4 +236,5 @@ h1 {
 
 @media (prefers-reduced-motion: reduce) {
   .badge { animation: none; }
+  .music.wartet .music__icon { animation: none; }
 }

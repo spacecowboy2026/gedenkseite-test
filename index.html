@@ -21,7 +21,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
   <link rel="preload" as="image" href="01.jpg">
-  <link rel="stylesheet" href="style.css?v=610e6edc">
+  <link rel="stylesheet" href="style.css?v=bb2d0b26">
 </head>
 <body>
   <section class="hero">
@@ -147,7 +147,8 @@
       }
       function starte() {
         var p = audio.play();
-        if (p && p.catch) p.catch(function () {});   // blockiert: wir warten auf die erste Berührung
+        // Blockiert der Browser den Ton, pulsiert der Knopf dezent, bis der Besucher die Seite berührt
+        if (p && p.catch) p.catch(function () { if (!vomBesucherPausiert) knopf.classList.add('wartet'); });
       }
       function ersteBeruehrung(e) {
         if (knopf.contains(e.target)) return;         // der Musik-Knopf regelt das selbst
@@ -158,12 +159,14 @@
       audio.addEventListener('pause', zeige);
       audio.addEventListener('ended', function () { audio.currentTime = 0; zeige(); });
       audio.addEventListener('playing', function () {
+        knopf.classList.remove('wartet');
         ['pointerdown', 'touchend', 'click', 'keydown'].forEach(function (n) { document.removeEventListener(n, ersteBeruehrung, true); });
       });
 
       knopf.addEventListener('click', function () {
         if (audio.paused) { vomBesucherPausiert = false; starte(); }
         else { vomBesucherPausiert = true; audio.pause(); }
+        knopf.classList.remove('wartet');
       });
 
       ['pointerdown', 'touchend', 'click', 'keydown'].forEach(function (n) { document.addEventListener(n, ersteBeruehrung, true); });
