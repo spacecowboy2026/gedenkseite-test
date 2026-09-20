@@ -64,7 +64,7 @@ No framework, no build step, no dependencies, no server code.
 ```
 index.html          The whole page: markup, texts and small inline scripts
 style.css           All styles. Colour schemes are defined at the very top
-01.jpg … 29.jpg     Slideshow photos, shown in numerical order
+01.jpg … 29.jpg     Slideshow photos, shown in numerical order. Old and recent photos are mixed on purpose
 NN-ganz.jpg         Same, but this photo is shown completely instead of cropped (see below)
 segeln.jpg          Sailing boat at sunset, always the last slide
 olaf.jpg            Portrait shown next to the quote
