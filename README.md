@@ -87,6 +87,7 @@ The instructions above describe GitHub Pages. The site also works unchanged on V
 - **Colour scheme.** Dark is the default, with background `#060810`. The light scheme is set through `data-theme="light"` on the `<html>` element. The visitor's choice is stored in `localStorage` under the key `theme`.
 - **Hearts.** A click on the `.badge` button creates sixteen small SVG hearts that are animated with the Web Animations API and then removed. Visitors who prefer reduced motion only get a short pulse.
 - **Song.** `olafs-song.mp3` starts by itself where the browser allows it. Most browsers, especially on phones, block sound until the visitor touches the page. In that case the song starts with the first tap, click or key press anywhere on the page. The pill button at the bottom left pauses and resumes it. If the visitor pauses, nothing restarts it automatically.
+- **Cache busting.** `index.html` loads the stylesheet as `style.css?v=…`. Whenever `style.css` changes, change that value as well, otherwise returning visitors keep seeing the old styles from their browser cache.
 - **Font.** "Host Grotesk" is loaded from Google Fonts. There are no other external requests.
 
 ## Search engines
