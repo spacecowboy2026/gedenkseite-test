@@ -1,0 +1,205 @@
+/* Aufbau und Maße aus der Vorlage. Zwei Farbschemata: dunkel (Standard) und hell */
+:root {
+  --white: #060810;   /* Seitenhintergrund */
+  --bg: #060810;      /* Texttafel */
+  --dark: #f1f5f9;    /* Schriftfarbe */
+  --badge: rgba(255, 255, 255, .08);
+  --badge-icon: rgba(255, 255, 255, .12);
+  --font: "Host Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --white: #ffffff;
+  --bg: #f6f9fc;
+  --dark: #0a2540;
+  --badge: rgba(255, 255, 255, .6);
+  --badge-icon: #ffffff;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--white);
+  color: var(--dark);
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 150%;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .4s ease, color .4s ease;
+}
+p, h1, blockquote { margin: 0; }
+
+.hero { position: relative; padding: 8px; overflow: hidden; }
+.hero__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* Links */
+.video-panel {
+  border-radius: 16px; overflow: hidden;
+  width: 100%; min-height: 930px; height: 100%;
+  background: #3a1d12;
+  position: relative;
+}
+.slide {
+  position: absolute; inset: 0; overflow: hidden;
+  opacity: 0; z-index: 0;
+  transition: opacity 1.6s ease-in-out;
+}
+.slide.is-prev { opacity: 1; z-index: 1; transition: none; }
+.slide.is-active { opacity: 1; z-index: 2; }
+.slide img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; display: block;
+  object-fit: cover; object-position: 50% 30%;
+}
+/* Querformat-Gruppenbilder: ganz zeigen, dahinter dasselbe Bild unscharf */
+.slide--ganz img { object-fit: contain; object-position: 50% 50%; }
+.slide__bg {
+  position: absolute; inset: -40px;
+  background-size: cover; background-position: center;
+  filter: blur(28px) brightness(.8);
+}
+
+/* Rechts */
+.content-panel {
+  border-radius: 16px;
+  background: var(--bg);
+  transition: background-color .4s ease;
+  padding: 104px 32px 64px 64px;
+}
+.headline {
+  display: flex; flex-direction: column;
+  justify-content: space-between; align-items: flex-start;
+  height: 100%; gap: 24px;
+}
+.tile { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+
+.label {
+  font-size: 12px; font-weight: 500; line-height: 16px;
+  text-transform: uppercase; letter-spacing: .02em;
+}
+.heading-wrap { max-width: 528px; }
+h1 {
+  font-size: 112px; font-weight: 400;
+  line-height: 93.3%; letter-spacing: -.04em;
+}
+.text-big { font-size: 20px; line-height: 140%; }
+
+.memory { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px; }
+.memory img {
+  display: block; width: 150px; height: auto;
+  aspect-ratio: 3 / 4; object-fit: cover;
+  border-radius: 16px; flex-shrink: 0;
+}
+
+/* Spruch als Zitat: kursiv, öffnendes Anführungszeichen hängt links vor dem Text */
+.quote { font-style: italic; text-indent: -.45em; padding-left: .45em; white-space: nowrap; }
+
+.closing { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.badge {
+  display: flex; align-items: center; gap: 8px;
+  border-radius: 24px;
+  background: var(--badge);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  padding: 4px 12px 4px 4px;
+  animation: badge-in .7s ease-out .4s backwards;
+  /* Plakette ist ein Button: Standard-Aussehen des Browsers zurücksetzen */
+  border: 0; margin: 0; font: inherit; color: inherit; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .15s ease;
+}
+.badge:active { transform: scale(.97); }
+.badge:focus-visible { outline: 2px solid var(--dark); outline-offset: 3px; }
+
+/* Aufsteigende Herzen beim Klick auf die Plakette */
+.herz {
+  position: fixed; z-index: 20; pointer-events: none;
+  display: block; line-height: 0; opacity: 0;
+  color: var(--dark);
+  will-change: transform, opacity;
+  animation-name: herz-steigt, herz-blende;
+  animation-timing-function: cubic-bezier(.25, .5, .4, 1), linear;
+  animation-fill-mode: both;
+}
+.herz svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+@keyframes herz-steigt {
+  0%   { transform: translate3d(0, 0, 0) scale(.4) rotate(0deg); }
+  35%  { transform: translate3d(var(--mx), var(--my), 0) scale(1) rotate(var(--dreh)); }
+  100% { transform: translate3d(var(--dx), var(--dy), 0) scale(.9) rotate(var(--zurueck)); }
+}
+@keyframes herz-blende {
+  0%   { opacity: 0; }
+  12%  { opacity: var(--max); }
+  60%  { opacity: var(--max); }
+  100% { opacity: 0; }
+}
+.badge__icon.pulst { animation: herz-puls .38s ease-out; }
+@keyframes herz-puls { 50% { transform: scale(1.22); } }
+@keyframes badge-in { from { opacity: 0; transform: translateY(16px); } }
+.badge__icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 50%; background: var(--badge-icon);
+  display: flex; justify-content: center; align-items: center;
+}
+
+/* Kleine Fußzeile ganz unten */
+.footnote {
+  display: flex; justify-content: center; align-items: center; gap: 6px;
+  padding: 12px 64px 20px;
+  font-size: 12px; line-height: 16px; letter-spacing: .02em;
+  color: color-mix(in srgb, var(--dark) 60%, transparent);
+}
+
+/* Umschalter hell / dunkel, unten rechts */
+.theme-toggle {
+  position: fixed; right: 24px; bottom: 24px; z-index: 10;
+  width: 40px; height: 40px; padding: 0;
+  display: flex; justify-content: center; align-items: center;
+  border: 1px solid color-mix(in srgb, var(--dark) 18%, transparent);
+  border-radius: 50%;
+  background: var(--bg); color: var(--dark);
+  cursor: pointer;
+  transition: background-color .4s ease, color .4s ease, transform .15s ease;
+}
+.theme-toggle:hover { transform: scale(1.06); }
+.theme-toggle:active { transform: scale(.96); }
+.theme-toggle:focus-visible { outline: 2px solid var(--dark); outline-offset: 3px; }
+.theme-toggle .icon-moon { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+/* Schmalere Desktop-Fenster: Foto und Zitat bleiben nebeneinander */
+@media (min-width: 992px) and (max-width: 1279px) {
+  .content-panel { padding-left: 40px; }
+  .memory { gap: 20px; }
+  .memory img { width: 120px; }
+  .quote { font-size: 18px; }
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+  .hero__grid { grid-template-columns: 1fr; }
+  .video-panel { min-height: 0; height: auto; aspect-ratio: 4 / 5; max-height: 85vh; }
+  .content-panel { padding: 64px 32px 48px; }
+  h1 { font-size: 72px; }
+}
+@media (max-width: 767px) {
+  h1 { font-size: 64px; }
+}
+/* Handy */
+@media (max-width: 479px) {
+  .content-panel { padding: 48px 16px 40px; }
+  h1 { font-size: 14vw; }
+  .label { font-size: 10px; line-height: 12px; }
+  .text-big { font-size: 16px; }
+  .memory { flex-direction: column; align-items: flex-start; }
+  .quote { white-space: normal; }
+  .memory img { width: 60%; }
+  .badge { font-size: 14px; }
+  .theme-toggle { right: 16px; bottom: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge { animation: none; }
+}
