@@ -52,6 +52,7 @@ No framework, no build step, no dependencies, no server code.
 - [ ] The portrait photo next to the quote is visible.
 - [ ] The round button at the bottom right switches between the dark and the light colour scheme.
 - [ ] Clicking or tapping the pill "Naline, Rena und Ole mit Familien" releases small floating hearts.
+- [ ] The button "Olaf’s Song" at the bottom left plays and pauses the song.
 - [ ] The small line "In Liebe, dein Sohn" with a kite icon is at the very bottom.
 - [ ] The browser console shows no missing files.
 - [ ] On a phone, the slideshow sits on top and the text below it, with no sideways scrolling.
@@ -66,6 +67,7 @@ style.css           All styles. Colour schemes are defined at the very top
 01.jpg … 22.jpg     Slideshow photos, already resized for the web (number 14 is unused)
 segeln.jpg          Sailing boat at sunset, always the last slide
 olaf.jpg            Portrait shown next to the quote
+olafs-song.mp3      The song, sung by Olaf himself. Played by the button at the bottom left
 .nojekyll           Tells GitHub Pages to serve the files as they are
 .gitignore          Keeps the large original photos out of the repository
 README.md           This file
@@ -84,6 +86,7 @@ The instructions above describe GitHub Pages. The site also works unchanged on V
 - **Slideshow.** The list of images, their order and the five-second duration are in the last `<script>` block of `index.html`, in the array `bilder`. `pos` sets which part of a photo stays visible when it is cropped. `ganz: true` shows a landscape group photo completely, over a blurred copy of itself. Images are loaded one ahead, not all at once.
 - **Colour scheme.** Dark is the default, with background `#060810`. The light scheme is set through `data-theme="light"` on the `<html>` element. The visitor's choice is stored in `localStorage` under the key `theme`.
 - **Hearts.** A click on the `.badge` button creates sixteen small SVG hearts that are animated with the Web Animations API and then removed. Visitors who prefer reduced motion only get a short pulse.
+- **Song.** `olafs-song.mp3` starts by itself where the browser allows it. Most browsers, especially on phones, block sound until the visitor touches the page. In that case the song starts with the first tap, click or key press anywhere on the page. The pill button at the bottom left pauses and resumes it. If the visitor pauses, nothing restarts it automatically.
 - **Font.** "Host Grotesk" is loaded from Google Fonts. There are no other external requests.
 
 ## Search engines

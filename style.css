@@ -151,6 +151,31 @@ h1 {
   color: color-mix(in srgb, var(--dark) 60%, transparent);
 }
 
+/* Olaf’s Song, unten links: Play/Pause und kleiner Titel */
+.music {
+  position: fixed; left: 24px; bottom: 24px; z-index: 10;
+  display: flex; align-items: center; gap: 8px;
+  height: 40px; padding: 4px 14px 4px 4px; margin: 0;
+  border: 1px solid color-mix(in srgb, var(--dark) 18%, transparent);
+  border-radius: 24px;
+  background: var(--bg); color: var(--dark);
+  font: inherit; font-size: 12px; line-height: 16px; letter-spacing: .02em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color .4s ease, color .4s ease, transform .15s ease;
+}
+.music:hover { transform: scale(1.03); }
+.music:active { transform: scale(.97); }
+.music:focus-visible { outline: 2px solid var(--dark); outline-offset: 3px; }
+.music__icon {
+  width: 30px; height: 30px; flex-shrink: 0;
+  display: flex; justify-content: center; align-items: center;
+  border-radius: 50%; background: var(--badge-icon);
+}
+.music .icon-pause { display: none; }
+.music[data-playing="true"] .icon-play { display: none; }
+.music[data-playing="true"] .icon-pause { display: block; }
+
 /* Umschalter hell / dunkel, unten rechts */
 .theme-toggle {
   position: fixed; right: 24px; bottom: 24px; z-index: 10;
@@ -179,6 +204,7 @@ h1 {
 
 /* Tablet */
 @media (max-width: 991px) {
+  .footnote { padding-bottom: 76px; }  /* Platz für die festen Knöpfe unten */
   .hero__grid { grid-template-columns: 1fr; }
   .video-panel { min-height: 0; height: auto; aspect-ratio: 4 / 5; max-height: 85vh; }
   .content-panel { padding: 64px 32px 48px; }
@@ -198,6 +224,7 @@ h1 {
   .memory img { width: 60%; }
   .badge { font-size: 14px; }
   .theme-toggle { right: 16px; bottom: 16px; }
+  .music { left: 16px; bottom: 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

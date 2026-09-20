@@ -6,7 +6,7 @@ The website is already finished. You only have to put the files into the GitHub 
 
 ## Before you start
 1. Unzip the file `olaf-margraf-gedenkseite-export.zip`.
-2. You now have a folder called `olaf-margraf-gedenkseite`. Inside it you see `index.html`, `style.css`, the photos and a few small text files. There are no subfolders.
+2. You now have a folder called `olaf-margraf-gedenkseite`. Inside it you see `index.html`, `style.css`, the photos, the song `olafs-song.mp3` and a few small text files. There are no subfolders.
 
 **Important:** what goes on GitHub is the *contents* of that folder, not the folder itself. All files, including the photos, must end up at the top level of the repository, next to `index.html`. If it ends up inside a subfolder, the website shows a "404 not found" page.
 
@@ -53,6 +53,7 @@ Open the website and look for these things:
 - The photos on the left change about every five seconds, with a soft fade.
 - The round button at the bottom right switches between dark and light.
 - Tapping "Naline, Rena und Ole mit Familien" makes small hearts float up.
+- The button "Olaf’s Song" at the bottom left plays and pauses the song.
 - On a phone, the photos are on top and the text is below.
 
 ## If something goes wrong
