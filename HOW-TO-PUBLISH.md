@@ -62,6 +62,13 @@ Open the website and look for these things:
 - **Photos are missing:** the photo files are not at the top level of the repository, or some were not uploaded. They must sit next to `index.html`. Upload them again.
 - **The domain stopped working:** the `CNAME` file was deleted. Enter the domain again under Settings, Pages, Custom domain.
 
+## Changing the photos later
+- The slideshow shows `01.jpg`, `02.jpg`, `03.jpg` … in that order, then `segeln.jpg`, then it starts again.
+- To change the order, renumber the files. To add a photo, give it the next free number.
+- Keep the numbers two-digit and without gaps, and the ending lowercase `.jpg`.
+- A file called `NN-ganz.jpg` is shown completely instead of cropped. Keep that ending when you renumber it.
+- After renaming, delete the old files in the repository before uploading the new ones.
+
 ## Good to know
 - The website can be found through Google. It can take a few days or weeks until a new page shows up in the search results.
 - A public GitHub repository means that anyone can see the photos and names in it. A website is public anyway, so this is normal.

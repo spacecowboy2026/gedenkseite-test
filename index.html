@@ -20,6 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
+  <link rel="preload" as="image" href="01.jpg">
   <link rel="stylesheet" href="style.css?v=610e6edc">
 </head>
 <body>
@@ -28,7 +29,6 @@
 
       <!-- Links: Diashow. Reihenfolge und Bilder stehen unten im Skript -->
       <div class="video-panel" id="slideshow" role="img" aria-label="Erinnerungsfotos von Olaf Margraf, am Ende ein Segelboot im Sonnenuntergang">
-        <div class="slide is-active"><img src="01.jpg" alt="" style="object-position: 50% 0%"></div>
       </div>
 
       <!-- Rechts: Text -->
@@ -230,78 +230,92 @@
   </script>
 
   <script>
-    // Diashow: jedes Bild 5 Sekunden, weiche Überblendung, endet mit dem Segelboot und beginnt von vorn.
-    // "pos" legt fest, welcher Bildausschnitt beim Zuschneiden sichtbar bleibt (waagerecht senkrecht).
-    // "ganz: true" zeigt ein Querformat-Gruppenbild vollständig, mit unscharfem Hintergrund aus demselben Bild.
+    // Diashow. Die Reihenfolge ergibt sich allein aus den Dateinamen:
+    //   01.jpg, 02.jpg, 03.jpg ... fortlaufend, ohne Lücke, Endung klein geschrieben (.jpg)
+    //   Heißt eine Datei NN-ganz.jpg, wird das Bild vollständig gezeigt (für Querformat-Gruppenbilder),
+    //   mit demselben Bild unscharf im Hintergrund.
+    //   Nach dem letzten nummerierten Bild kommt immer segeln.jpg, danach beginnt es von vorn.
+    // Reihenfolge ändern: Dateien umnummerieren. Bild ergänzen: nächste freie Nummer vergeben.
     (function () {
-      var DAUER = 5000;
-      var bilder = [
-        { src: '01.jpg', pos: '50% 0%' },
-        { src: '19.jpg', ganz: true },
-        { src: '22.jpg', ganz: true },
-        { src: '02.jpg', pos: '60% 30%' },
-        { src: '03.jpg' },
-        { src: '05.jpg' },
-        { src: '06.jpg' },
-        { src: '20.jpg' },
-        { src: '21.jpg' },
-        { src: '08.jpg' },
-        { src: '09.jpg' },
-        { src: '16.jpg' },
-        { src: '07.jpg' },
-        { src: '17.jpg' },
-        { src: '10.jpg' },
-        { src: '11.jpg' },
-        { src: '12.jpg', pos: '60% 75%' },
-        { src: '13.jpg' },
-        { src: '18.jpg' },
-        { src: '04.jpg' },
-        { src: '15.jpg' },
-        { src: 'segeln.jpg', pos: '50% 62%' }
-      ];
+      var DAUER = 5000;                                // Anzeigedauer je Bild in Millisekunden
+      var SCHLUSS = { src: 'segeln.jpg', pos: '50% 62%' };
       var box = document.getElementById('slideshow');
-      var slides = [box.querySelector('.slide')];
-      var aktiv = 0;
+      var fertig = {};        // Index -> Promise auf das fertige Bild-Element
+      var gesamt = null;      // Anzahl nummerierter Bilder, wird beim ersten Durchlauf ermittelt
+      var aktiv = -1, aktuell = null;
 
-      function hole(k) {
-        if (slides[k]) return slides[k];
+      function nr(k) { return (k + 1 < 10 ? '0' : '') + (k + 1); }
+
+      function lade(src) {
+        return new Promise(function (ok, nein) {
+          var im = new Image();
+          im.alt = '';
+          im.onload = function () {
+            var p = im.decode ? im.decode() : Promise.resolve();
+            p.then(function () { ok(im); }, function () { ok(im); });
+          };
+          im.onerror = nein;
+          im.src = src;
+        });
+      }
+
+      function baue(im, ganz, pos) {
         var d = document.createElement('div');
-        d.className = 'slide' + (bilder[k].ganz ? ' slide--ganz' : '');
-        if (bilder[k].ganz) {
+        d.className = 'slide' + (ganz ? ' slide--ganz' : '');
+        if (ganz) {
           var bg = document.createElement('div');
           bg.className = 'slide__bg';
-          bg.style.backgroundImage = 'url("' + bilder[k].src + '")';
+          bg.style.backgroundImage = 'url("' + im.src + '")';
           d.appendChild(bg);
         }
-        var im = new Image();
-        im.alt = '';
-        if (bilder[k].pos) im.style.objectPosition = bilder[k].pos;
-        im.src = bilder[k].src;
+        if (pos) im.style.objectPosition = pos;
         d.appendChild(im);
         box.appendChild(d);
-        slides[k] = d;
         return d;
       }
 
-      function weiter() {
-        var n = (aktiv + 1) % bilder.length;
-        var neu = hole(n);
-        var bild = neu.querySelector('img');
-        var zeige = function () {
-          var alt = slides[aktiv];
-          alt.classList.remove('is-active');
-          alt.classList.add('is-prev');
-          neu.classList.add('is-active');
-          setTimeout(function () { alt.classList.remove('is-prev'); }, 1700);
-          aktiv = n;
-          hole((n + 1) % bilder.length);   // nächstes Bild schon vorladen
-          setTimeout(weiter, DAUER);
-        };
-        if (bild.decode) { bild.decode().then(zeige, zeige); } else { zeige(); }
+      function schluss() {
+        return lade(SCHLUSS.src).then(function (im) { return baue(im, false, SCHLUSS.pos); });
       }
 
-      hole(1);
-      setTimeout(weiter, DAUER);
+      function bereite(k) {
+        if (fertig[k]) return fertig[k];
+        if (gesamt !== null && k >= gesamt) { fertig[k] = schluss(); return fertig[k]; }
+        fertig[k] = lade(nr(k) + '.jpg').then(
+          function (im) { return baue(im, false); },
+          function () {
+            return lade(nr(k) + '-ganz.jpg').then(
+              function (im) { return baue(im, true); },
+              function () { if (gesamt === null) gesamt = k; return schluss(); }   // keine Nummer mehr: Schlussbild
+            );
+          }
+        );
+        return fertig[k];
+      }
+
+      function danach(i) { return (gesamt !== null && i >= gesamt) || i >= 98 ? 0 : i + 1; }
+
+      function weiter() {
+        var n = danach(aktiv);
+        bereite(n).then(function (neu) {
+          var alt = aktuell;
+          if (alt && alt !== neu) {
+            alt.classList.remove('is-active');
+            alt.classList.add('is-prev');
+            setTimeout(function () { alt.classList.remove('is-prev'); }, 1700);
+          }
+          void neu.offsetWidth;                         // damit auch das allererste Bild weich einblendet
+          neu.classList.add('is-active');
+          aktiv = n; aktuell = neu;
+          bereite(danach(n));                           // nächstes Bild schon vorladen
+          setTimeout(weiter, DAUER);
+        }, function () {
+          aktiv = -1;                                   // etwas fehlt: von vorn versuchen
+          setTimeout(weiter, DAUER);
+        });
+      }
+
+      weiter();
     })();
   </script>
 </body>

@@ -17,7 +17,7 @@ No framework, no build step, no dependencies, no server code.
 2. Whether the site should use a custom domain, and if yes, which one.
 
 ### Hard rules
-- Do **not** change any text, names, dates, images, image order, colours or layout. This is a memorial page and the content is final.
+- Do **not** change any text, names, dates, images, colours or layout. The image order may only be changed if the owner asks for it. This is a memorial page and the content is final.
 - Do **not** add a framework, bundler, package.json, build step, analytics, cookies or tracking.
 - Do **not** delete the repository's `.git` folder or its history.
 - If the repository already contains a file named `CNAME`, **keep it unchanged**. It holds the custom domain. Deleting it takes the domain offline.
@@ -62,9 +62,10 @@ No framework, no build step, no dependencies, no server code.
 ## Project structure
 
 ```
-index.html          The whole page: markup, texts and four small inline scripts
+index.html          The whole page: markup, texts and small inline scripts
 style.css           All styles. Colour schemes are defined at the very top
-01.jpg … 22.jpg     Slideshow photos, already resized for the web (number 14 is unused)
+01.jpg … 29.jpg     Slideshow photos, shown in numerical order
+NN-ganz.jpg         Same, but this photo is shown completely instead of cropped (see below)
 segeln.jpg          Sailing boat at sunset, always the last slide
 olaf.jpg            Portrait shown next to the quote
 olafs-song.mp3      The song, sung by Olaf himself. Played by the button at the bottom left
@@ -83,7 +84,11 @@ The instructions above describe GitHub Pages. The site also works unchanged on V
 
 ## How the page works
 - **Layout.** Two equal panels side by side with an 8px gap. Below 992px width they stack, slideshow first.
-- **Slideshow.** The list of images, their order and the five-second duration are in the last `<script>` block of `index.html`, in the array `bilder`. `pos` sets which part of a photo stays visible when it is cropped. `ganz: true` shows a landscape group photo completely, over a blurred copy of itself. Images are loaded one ahead, not all at once.
+- **Slideshow.** There is no list of images in the code. The page simply loads `01.jpg`, `02.jpg`, `03.jpg` and so on, five seconds each with a soft crossfade. For every number it first tries `NN.jpg` and then `NN-ganz.jpg`. The first number for which neither file exists ends the series. Then `segeln.jpg` is shown and the slideshow starts again at `01`. Two missing-file requests (404) at the end of the first round are therefore expected and harmless.
+  - **Change the order:** renumber the files. **Add a photo:** give it the next free number. **Remove a photo:** delete it and renumber so that no gap remains.
+  - Numbers must be two digits, continuous, without gaps, and the extension must be lowercase `.jpg`.
+  - `NN-ganz.jpg` ("ganz" is German for "whole") shows a photo completely over a blurred copy of itself. Use it for landscape group photos that would lose people when cropped. All other photos fill the panel and are cropped around the upper middle.
+  - When photos are renamed, delete the old files on the server. Do not leave old numbers lying around.
 - **Colour scheme.** Dark is the default, with background `#060810`. The light scheme is set through `data-theme="light"` on the `<html>` element. The visitor's choice is stored in `localStorage` under the key `theme`.
 - **Hearts.** A click on the `.badge` button creates sixteen small SVG hearts that are animated with the Web Animations API and then removed. Visitors who prefer reduced motion only get a short pulse.
 - **Song.** `olafs-song.mp3` starts by itself where the browser allows it. Most browsers, especially on phones, block sound until the visitor touches the page. In that case the song starts with the first tap, click or key press anywhere on the page. The pill button at the bottom left pauses and resumes it. If the visitor pauses, nothing restarts it automatically.
